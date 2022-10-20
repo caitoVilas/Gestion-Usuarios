@@ -1,0 +1,14 @@
+package com.caito.gestionusuarios.repository;
+
+import com.caito.gestionusuarios.dtos.PersonResponseDTO;
+import com.caito.gestionusuarios.entity.Person;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface PersonRepository extends JpaRepository<Person, Long> {
+
+    List<Person> findBySurname(String surname);
+}
