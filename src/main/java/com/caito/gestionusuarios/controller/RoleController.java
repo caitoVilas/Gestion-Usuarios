@@ -62,6 +62,7 @@ public class RoleController {
     @ApiResponse(responseCode = "500", description = "error interno")
     public ResponseEntity<List<RoleResponseDTO>> getAll(){
 
+        roleService.getAll();
         List<RoleResponseDTO> responseDTOList = roleService.getAll();
         if (responseDTOList.isEmpty())
             return new ResponseEntity<List<RoleResponseDTO>>(HttpStatus.NO_CONTENT);
@@ -75,8 +76,10 @@ public class RoleController {
     @ApiResponse(responseCode = "500", description = "error interno")
     public ResponseEntity<RoleResponseDTO> addPermissions(@PathVariable Long roleId,
                                                           @RequestBody
-                                                          List<PermissionsListDTO> permissionsListDTO){
+                                                          List<Long> permissions){
 
-        return null;
+        RoleResponseDTO responseDTO = roleService.addPermissions(roleId, permissions);
+
+        return new ResponseEntity<RoleResponseDTO>(responseDTO, HttpStatus.OK);
     }
 }

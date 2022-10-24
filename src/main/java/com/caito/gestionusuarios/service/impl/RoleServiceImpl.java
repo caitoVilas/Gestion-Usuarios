@@ -1,11 +1,12 @@
 package com.caito.gestionusuarios.service.impl;
 
-import com.caito.gestionusuarios.dtos.PermissionsListDTO;
+import com.caito.gestionusuarios.dtos.PermissionResponseDTO;
 import com.caito.gestionusuarios.dtos.RoleRequestDTO;
 import com.caito.gestionusuarios.dtos.RoleResponseDTO;
 import com.caito.gestionusuarios.entity.Permission;
 import com.caito.gestionusuarios.entity.Role;
-import com.caito.gestionusuarios.exceptions.customs.NotFoundException;
+import com.caito.gestionusuarios.entity.RolesPermissions;
+import com.caito.gestionusuarios.mappers.PermissionResponseMapper;
 import com.caito.gestionusuarios.mappers.RoleRequestMapper;
 import com.caito.gestionusuarios.mappers.RoleResponseMapper;
 import com.caito.gestionusuarios.repository.RoleRepository;
@@ -14,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -26,8 +29,11 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     RoleResponseMapper roleResponseMapper;
     @Autowired
+    RolePermissionsServiceImpl rolePermissionsService;
+    @Autowired
+    PermissionResponseMapper permissionResponseMapper;
+    @Autowired
     PermisssionServiceImpl permisssionService;
-
 
     @Override
     public RoleResponseDTO createRole(RoleRequestDTO roleRequestDTO) {
@@ -39,24 +45,49 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<RoleResponseDTO> getAll() {
 
+        List<RoleResponseDTO> roleResponseDTOS = new ArrayList<>();
         List<Role> roleList = roleRepository.findAll();
-        return roleResponseMapper.roleListToRoleResponseDTOList(roleList);
+
+        for (Role role : roleList){
+            List<RolesPermissions> permissions = new ArrayList<>();
+            Set<Permission> permissionList = new HashSet<>();
+            permissions = rolePermissionsService.getPermissionsForRoleId(role.getRoleId());
+
+            permissions.forEach(p -> {
+                Permission permission = permisssionService.getById(p.getRolePermissionId());
+                permissionList.add(permission);
+            });
+            Set<PermissionResponseDTO> permissionResponseDTOS = new HashSet<>();
+            permissionList.forEach(p -> {
+                permissionResponseDTOS.add(permissionResponseMapper.permissionToPermissionsResponseDTO(p));
+            });
+            RoleResponseDTO response = new RoleResponseDTO();
+            response.setRoleId(role.getRoleId());
+            response.setName(role.getName());
+            response.setPermissions(permissionResponseDTOS);
+            roleResponseDTOS.add(response);
+
+        }
+
+        return roleResponseDTOS;
     }
 
-    @Override
-    public RoleResponseDTO addPermissions(Long roleId,List<PermissionsListDTO> permissionsListDTOS) {
 
-        Role role = roleRepository.findById(roleId).orElseThrow(()->
+    @Override
+    public RoleResponseDTO addPermissions(Long roleId,List<Long> permissions) {
+
+       /* Role role = roleRepository.findById(roleId).orElseThrow(()->
                 new NotFoundException("Rol no encontrado!"));
 
-        List<Permission> permissions = new ArrayList<>();
-        permissionsListDTOS.forEach(p ->{
-             Permission permission = permisssionService.getById(p.getPermissionId());
-             permissions.add(permission);
+        List<Permission> permissionsList = new ArrayList<>();
+        permissions.forEach(p ->{
+             Permission permission = permisssionService.getById(p);
+             permissionsList.add(permission);
         });
 
-        role.setPermissions(permissions);
-        return roleResponseMapper.roleToRoleResponseDTO(roleRepository.save(role));
+        role.setPermissions(permissionsList);
+        return roleResponseMapper.roleToRoleResponseDTO(roleRepository.save(role));*/
+        return null;
     }
 
 

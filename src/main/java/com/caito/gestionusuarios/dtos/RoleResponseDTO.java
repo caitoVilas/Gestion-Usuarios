@@ -1,11 +1,14 @@
 package com.caito.gestionusuarios.dtos;
 
+
+import com.caito.gestionusuarios.entity.Permission;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +20,5 @@ public class RoleResponseDTO {
     private Long roleId;
     @Schema(name = "name", example = "ADMIN")
     private String name;
-    private List<PermissionResponseDTO> permissions;
+    private Set<PermissionResponseDTO> permissions;
 }
