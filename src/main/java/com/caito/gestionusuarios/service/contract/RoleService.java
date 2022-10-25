@@ -9,5 +9,5 @@ public interface RoleService {
 
     public RoleResponseDTO createRole(RoleRequestDTO roleRequestDTO);
     public List<RoleResponseDTO> getAll();
-    public RoleResponseDTO addPermissions(Long roleId, List<Long> permissions);
+    public void addPermissions(Long roleId, List<Long> permissions);
 }

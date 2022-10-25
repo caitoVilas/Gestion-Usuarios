@@ -70,16 +70,16 @@ public class RoleController {
     }
 
     @PutMapping("/permisos/{roleId}")
-    @Operation(summary = "Metodo para asignar permisos a roles")
+    @Operation(summary = "Metodo para cambiar permisos a roles")
     @ApiResponse(responseCode = "200", description = "ok")
     @ApiResponse(responseCode = "400", description = "bad request")
     @ApiResponse(responseCode = "500", description = "error interno")
-    public ResponseEntity<RoleResponseDTO> addPermissions(@PathVariable Long roleId,
+    public ResponseEntity<?> addPermissions(@PathVariable Long roleId,
                                                           @RequestBody
                                                           List<Long> permissions){
 
-        RoleResponseDTO responseDTO = roleService.addPermissions(roleId, permissions);
+       roleService.addPermissions(roleId, permissions);
 
-        return new ResponseEntity<RoleResponseDTO>(responseDTO, HttpStatus.OK);
+        return new ResponseEntity<RoleResponseDTO>(HttpStatus.OK);
     }
 }

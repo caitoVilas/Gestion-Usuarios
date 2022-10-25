@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RolePermissionsServiceImpl implements RolePermisssionService {
@@ -20,5 +21,17 @@ public class RolePermissionsServiceImpl implements RolePermisssionService {
 
 
         return rolePermissionRepository.findByRoleId(roleId);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+
+        rolePermissionRepository.deleteById(id);
+    }
+
+    @Override
+    public void createRolePermission(RolesPermissions rolesPermissions) {
+
+        rolePermissionRepository.save(rolesPermissions);
     }
 }

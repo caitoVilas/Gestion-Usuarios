@@ -6,6 +6,7 @@ import com.caito.gestionusuarios.dtos.RoleResponseDTO;
 import com.caito.gestionusuarios.entity.Permission;
 import com.caito.gestionusuarios.entity.Role;
 import com.caito.gestionusuarios.entity.RolesPermissions;
+import com.caito.gestionusuarios.exceptions.customs.NotFoundException;
 import com.caito.gestionusuarios.mappers.PermissionResponseMapper;
 import com.caito.gestionusuarios.mappers.RoleRequestMapper;
 import com.caito.gestionusuarios.mappers.RoleResponseMapper;
@@ -54,7 +55,7 @@ public class RoleServiceImpl implements RoleService {
             permissions = rolePermissionsService.getPermissionsForRoleId(role.getRoleId());
 
             permissions.forEach(p -> {
-                Permission permission = permisssionService.getById(p.getRolePermissionId());
+                Permission permission = permisssionService.getById(p.getPermissionId());
                 permissionList.add(permission);
             });
             Set<PermissionResponseDTO> permissionResponseDTOS = new HashSet<>();
@@ -74,20 +75,36 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public RoleResponseDTO addPermissions(Long roleId,List<Long> permissions) {
+    public void addPermissions(Long roleId,List<Long> permissions) {
 
-       /* Role role = roleRepository.findById(roleId).orElseThrow(()->
+        Role role = roleRepository.findById(roleId).orElseThrow(()->
                 new NotFoundException("Rol no encontrado!"));
 
-        List<Permission> permissionsList = new ArrayList<>();
-        permissions.forEach(p ->{
-             Permission permission = permisssionService.getById(p);
-             permissionsList.add(permission);
+        Set<Permission> newPermissions = new HashSet<>();
+
+        List<RolesPermissions> oldPermissions = rolePermissionsService.getPermissionsForRoleId(roleId);
+        Set<RolesPermissions> saveNewPermissions = new HashSet<>();
+
+         permissions.forEach(per -> {
+             Permission permission = permisssionService.getById(per);
+             newPermissions.add(permission);
+             RolesPermissions rp = new RolesPermissions();
+             rp.setRoleId(roleId);
+             rp.setPermissionId(permission.getPermissionId());
+             saveNewPermissions.add(rp);
+         });
+
+         //eliminar viejos
+         oldPermissions.forEach(permission -> {
+            rolePermissionsService.deleteById(permission.getRolePermissionId());
+         });
+
+         //asignar nuevos
+        saveNewPermissions.forEach(permission -> {
+            rolePermissionsService.createRolePermission(permission);
         });
 
-        role.setPermissions(permissionsList);
-        return roleResponseMapper.roleToRoleResponseDTO(roleRepository.save(role));*/
-        return null;
+        return ;
     }
 
 

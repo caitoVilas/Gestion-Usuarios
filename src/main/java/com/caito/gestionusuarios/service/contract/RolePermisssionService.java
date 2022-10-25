@@ -8,4 +8,6 @@ import java.util.List;
 public interface RolePermisssionService {
 
     List<RolesPermissions> getPermissionsForRoleId(Long roleId);
+    void deleteById(Long id);
+    void createRolePermission(RolesPermissions rolesPermissions);
 }
