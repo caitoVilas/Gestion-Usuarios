@@ -40,9 +40,10 @@ public class RoleController {
     @ApiResponse(responseCode = "200", description = "rol actualizado")
     @ApiResponse(responseCode = "400", description = "bad request")
     @ApiResponse(responseCode = "500", description = "error interno")
-    public ResponseEntity<?> updateRole(@PathVariable Long rolId, @PathVariable String rolName){
+    public ResponseEntity<?> updateRole(@PathVariable Long rolId, @PathVariable String roleName){
 
-        return null;
+        roleService.updateRole(rolId, roleName);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{roleId}")

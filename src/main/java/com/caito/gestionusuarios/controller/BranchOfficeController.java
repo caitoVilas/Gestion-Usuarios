@@ -2,6 +2,7 @@ package com.caito.gestionusuarios.controller;
 
 import com.caito.gestionusuarios.dtos.BranchOfficeRequestDTO;
 import com.caito.gestionusuarios.dtos.BranchOfficeResponseDTO;
+import com.caito.gestionusuarios.dtos.UserResponseDTO;
 import com.caito.gestionusuarios.service.impl.BranchOfficeServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -67,6 +68,35 @@ public class BranchOfficeController {
     @ApiResponse(responseCode = "500", description = "error interno")
     public ResponseEntity<?> delete(@PathVariable Long branchOfficeId){
 
+        branchOfficeService.deleteBranchOffice(branchOfficeId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/usuarios/{userId}/{branchOfficeId}")
+    @Operation(summary = "Metodo para asignar sucursal a usuario")
+    @ApiResponse(responseCode = "200", description = "ok")
+    @ApiResponse(responseCode = "400", description = "bad request")
+    @ApiResponse(responseCode = "500", description = "error interno")
+    public ResponseEntity<?> setBranchOffice(@PathVariable Long userId,
+                                             @PathVariable Long branchOfficeId){
+
+        branchOfficeService.setBranchOffice(userId, branchOfficeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/usuarios/{branchOfficeId}")
+    @Operation(summary = "Metodo que muestra un listado de usuarios de una sucursal")
+    @ApiResponse(responseCode = "200", description = "ok")
+    @ApiResponse(responseCode = "204", description = "sin contenido")
+    @ApiResponse(responseCode = "400", description = "bad request")
+    @ApiResponse(responseCode = "500", description = "error interno")
+    public ResponseEntity<List<UserResponseDTO>> getUsersByBranchOffice(@PathVariable Long branchOfficeId){
+
+        List<UserResponseDTO> userList = branchOfficeService.getUsersByBranchOffice(branchOfficeId);
+        if (userList.isEmpty())
+            return new ResponseEntity<List<UserResponseDTO>>(HttpStatus.NO_CONTENT);
+
+        return new ResponseEntity<List<UserResponseDTO>>(userList, HttpStatus.OK);
+    }
+
 }

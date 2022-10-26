@@ -4,6 +4,7 @@ import com.caito.gestionusuarios.dtos.DataUserDTO;
 import com.caito.gestionusuarios.dtos.NewUserDTO;
 import com.caito.gestionusuarios.dtos.PersonResponseDTO;
 import com.caito.gestionusuarios.dtos.UserResponseDTO;
+import com.caito.gestionusuarios.entity.BranchOffice;
 import com.caito.gestionusuarios.entity.User;
 import com.caito.gestionusuarios.entity.UserStatus;
 import com.caito.gestionusuarios.exceptions.customs.BadRequestException;
@@ -65,6 +66,21 @@ public class UserServiceImpl implements UserService {
         return userResponseMapper.userListToUserResponseDTOList(userList);
     }
 
+    @Override
+    public UserResponseDTO updateUser(User user) {
+
+        User updatedUser = userRepository.save(user);
+        return userResponseMapper.userToUserResponseDTO(updatedUser);
+    }
+
+    public User getuserInternal(long userId){
+
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            return new NotFoundException("Usuario no encontrado!");
+        });
+        return user;
+    }
+
     private void validateUser(DataUserDTO userDTO){
 
         if (userDTO.getUsername().isEmpty() || userDTO.getUsername() == null){
@@ -75,5 +91,10 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("La contraseña es requerida!");
         }
 
+    }
+
+    public List<User> getUserByBranchOffice(BranchOffice branchOffice){
+
+       return userRepository.findByBranchOfficeId(branchOffice);
     }
 }

@@ -107,5 +107,16 @@ public class RoleServiceImpl implements RoleService {
         return ;
     }
 
+    @Override
+    public void updateRole(Long roleId, String roleName) {
+
+        Role role = roleRepository.findById(roleId).orElseThrow(() -> {
+            return new NotFoundException("No se encuentra el rol!");
+        });
+
+        role.setName(roleName);
+        roleRepository.save(role);
+    }
+
 
 }

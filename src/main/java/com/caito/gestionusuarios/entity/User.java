@@ -38,4 +38,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updated;
     private boolean deleted;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branchOffice_id")
+    private BranchOffice branchOfficeId;
 }
